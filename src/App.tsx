@@ -536,7 +536,7 @@ export default function App() {
 
           <div className="titlebarInfo">
             <span className="titlebarEyebrow">Karabiner Layer</span>
-            <h1 className="titlebarHeading">Hyper Launcher</h1>
+            <h1 className="titlebarHeading">PowerKeys</h1>
           </div>
 
           <div className="titlebarActions">
