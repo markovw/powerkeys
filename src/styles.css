@@ -1,0 +1,658 @@
+:root {
+  --bg: #0d0d0d;
+  --surface-0: #141414;
+  --surface-1: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+
+  --text-1: rgba(255, 255, 255, 0.92);
+  --text-2: rgba(255, 255, 255, 0.55);
+  --text-3: rgba(255, 255, 255, 0.28);
+
+  --accent-blue: #0a84ff;
+  --accent-orange: #ff9f0a;
+
+  --separator: rgba(255, 255, 255, 0.09);
+
+  --shadow-key: 0 2px 0 rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --shadow-key-active: 0 2px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-window: 0 32px 72px rgba(0, 0, 0, 0.65), 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+
+  --ff: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --ff-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --ff-mono: 'SF Mono', 'JetBrains Mono', 'SFMono-Regular', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ff);
+  color: var(--text-1);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ─── Grid background ────────────────────────── */
+
+.gridPattern {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: linear-gradient(to bottom, white 0%, white 75%, transparent 100%);
+  mask-image: linear-gradient(to bottom, white 0%, white 75%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page > .window {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Page ───────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 56px;
+}
+
+.window {
+  width: min(1100px, 100%);
+  background: var(--surface-0);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+/* ─── Titlebar ───────────────────────────────── */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 20px;
+  background: var(--surface-1);
+  border-bottom: 0.5px solid var(--separator);
+  min-height: 52px;
+}
+
+.windowDots {
+  display: flex;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot--close { background: #ff5f57; }
+.dot--min   { background: #ffbd2e; }
+.dot--max   { background: #28c840; }
+
+.titlebarInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.titlebarEyebrow {
+  display: block;
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+
+.titlebarHeading {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.titlebarActions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-1);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.copyButton:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.copyHint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-3);
+  text-align: right;
+}
+
+/* ─── Keyboard deck ──────────────────────────── */
+
+.keyboardDeck {
+  padding: 24px 24px 0;
+}
+
+.keyboardStage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2.43 / 1;
+}
+
+/* ─── Keycaps ────────────────────────────────── */
+
+.keycap {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  border-radius: 6px;
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-2);
+  color: var(--text-2);
+  box-shadow: var(--shadow-key);
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    background 130ms ease,
+    border-color 130ms ease;
+  will-change: transform;
+}
+
+.keycap--fn     { border-radius: 5px; }
+.keycap--bottom { border-radius: 6px; }
+
+.keycap--muted {
+  background: rgba(44, 44, 46, 0.65);
+  color: var(--text-3);
+  border-color: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.keycap--active {
+  cursor: pointer;
+  background: color-mix(in srgb, var(--accent-blue) 14%, var(--surface-2));
+  border-color: rgba(10, 132, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-key-active);
+}
+
+.keycap--active:hover,
+.keycap--active:focus-visible {
+  background: color-mix(in srgb, var(--accent-blue) 22%, var(--surface-3));
+  border-color: rgba(10, 132, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(10, 132, 255, 0.16),
+    0 2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.keycap--hyper {
+  background: color-mix(in srgb, var(--accent-orange) 26%, var(--surface-2));
+  border-color: rgba(255, 159, 10, 0.45);
+  color: rgba(255, 230, 180, 0.95);
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(255, 159, 10, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.keycap--hyper:hover,
+.keycap--hyper:focus-visible {
+  background: color-mix(in srgb, var(--accent-orange) 36%, var(--surface-3));
+  border-color: rgba(255, 159, 10, 0.65);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px rgba(255, 159, 10, 0.22),
+    0 2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* Key press animation — fires when keycap--selected class is added */
+@keyframes keyPress {
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(1.5px) scale(0.985); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.keycap--selected {
+  animation: keyPress 200ms cubic-bezier(0.2, 0, 0.1, 1);
+}
+
+.keycap--active.keycap--selected {
+  background: color-mix(in srgb, var(--accent-blue) 28%, var(--surface-3));
+  border-color: rgba(10, 132, 255, 0.6);
+  box-shadow:
+    0 0 0 2px rgba(10, 132, 255, 0.18),
+    0 2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.keycap--hyper.keycap--selected {
+  background: color-mix(in srgb, var(--accent-orange) 42%, var(--surface-3));
+  border-color: rgba(255, 159, 10, 0.75);
+  box-shadow:
+    0 0 0 2px rgba(255, 159, 10, 0.2),
+    0 2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Key labels ─────────────────────────────── */
+
+.keyLegend {
+  font-family: var(--ff-mono);
+  font-size: clamp(0.52rem, 0.95vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.keycap--fn .keyLegend {
+  font-size: clamp(0.44rem, 0.74vw, 0.82rem);
+  font-weight: 500;
+}
+
+.keyApp {
+  font-family: var(--ff);
+  font-size: clamp(0.36rem, 0.6vw, 0.66rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ─── Tooltip ────────────────────────────────── */
+
+.tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  width: min(200px, 80vw);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(28, 28, 30, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-1);
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: opacity 80ms ease;
+  z-index: 2;
+}
+
+.tooltip strong,
+.tooltip span {
+  display: block;
+}
+
+.tooltip strong {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.tooltip span {
+  margin-top: 3px;
+  color: var(--text-2);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.keycap--active:hover .tooltip,
+.keycap--active:focus-visible .tooltip,
+.keycap--hyper:hover .tooltip,
+.keycap--hyper:focus-visible .tooltip {
+  opacity: 1;
+}
+
+/* ─── Info strip ─────────────────────────────── */
+
+.infoStrip {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  border-top: 0.5px solid var(--separator);
+  min-height: 68px;
+}
+
+.infoCombo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 20px;
+  border-right: 0.5px solid var(--separator);
+  flex-shrink: 0;
+  min-width: 196px;
+}
+
+.infoKbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 5px;
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface-2);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.infoPlus {
+  color: var(--text-3);
+  font-size: 11px;
+}
+
+.infoContent {
+  padding: 14px 20px;
+  min-width: 0;
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+
+.infoDetail {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+.infoMeta {
+  margin: 3px 0 0;
+  font-family: var(--ff-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+/* ─── Help button & modal ────────────────────── */
+
+.titlebarActionsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+
+.helpButton:hover,
+.helpButton:focus-visible {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: var(--text-1);
+}
+
+.helpButton:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.helpOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.helpModal {
+  width: min(440px, 100%);
+  background: var(--surface-1);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 32px 72px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.helpHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 0.5px solid var(--separator);
+}
+
+.helpTitle {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-1);
+}
+
+.helpClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-2);
+  font-size: 11px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.helpClose:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: var(--text-1);
+}
+
+.helpSteps {
+  list-style: none;
+  margin: 0;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.helpStep {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.helpStepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(10, 132, 255, 0.18);
+  border: 0.5px solid rgba(10, 132, 255, 0.35);
+  color: var(--accent-blue);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.helpStepTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+.helpStepDesc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.helpCode {
+  display: block;
+  margin-top: 5px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* ─── Responsive ─────────────────────────────── */
+
+@media (max-width: 800px) {
+  .page {
+    padding: 20px 12px 40px;
+    align-items: flex-start;
+  }
+
+  .infoStrip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .infoCombo {
+    border-right: none;
+    border-bottom: 0.5px solid var(--separator);
+    width: 100%;
+    min-width: 0;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding: 0 0 32px;
+    align-items: flex-start;
+  }
+
+  .window {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
+
+  .titlebar {
+    padding: 10px 14px;
+    min-height: 46px;
+  }
+
+  .titlebarEyebrow {
+    display: none;
+  }
+
+  .copyHint {
+    display: none;
+  }
+
+  .copyButton {
+    font-size: 11px;
+    height: 26px;
+    padding: 0 10px;
+  }
+
+  .keyboardDeck {
+    padding: 16px 12px 0;
+  }
+
+  .infoCombo {
+    padding: 10px 14px;
+  }
+
+  .infoContent {
+    padding: 10px 14px;
+  }
+}
