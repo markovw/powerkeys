@@ -643,6 +643,7 @@ export default function App() {
                 <span className="helpStepNum">1</span>
                 <div>
                   <p className="helpStepTitle">Install the apps</p>
+                  <p className="helpStepDesc">No Homebrew? <a className="helpLink" href="https://brew.sh/" target="_blank" rel="noreferrer">Install it first</a> — trust me, you'll want it.</p>
                   <code className="helpCode">brew install --cask karabiner-elements</code>
                   <code className="helpCode">brew install --cask raycast</code>
                 </div>
