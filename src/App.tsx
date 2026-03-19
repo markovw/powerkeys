@@ -45,12 +45,6 @@ const config = {
           modifiers: ['left_command', 'left_control', 'left_option'],
         },
       ],
-      to_if_alone: [
-        {
-          key_code: 'spacebar',
-          modifiers: ['left_control', 'left_option'],
-        },
-      ],
       type: 'basic',
     },
     {
